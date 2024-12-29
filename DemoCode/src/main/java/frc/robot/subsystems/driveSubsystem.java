@@ -72,8 +72,8 @@ public class driveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("kD", kD);
     SmartDashboard.putNumber("Target Drive", targetDrive);
     SmartDashboard.putNumber("Target Turn", targetTurn);
-    SmartDashboard.putNumber("Left Encoder", leftMotorEncoder.getPosition());
-    SmartDashboard.putNumber("Right Encoder", rightMotorEncoder.getPosition());
+    //SmartDashboard.putNumber("Left Encoder", leftMotorEncoder.getPosition());
+   // SmartDashboard.putNumber("Right Encoder", rightMotorEncoder.getPosition());
 
 
 
@@ -97,16 +97,6 @@ public class driveSubsystem extends SubsystemBase {
       return kP * error + kI * integral + kD * derivative;
   }
 
-
-
-  public void set(double drive,double turn){
-    differentialDrive.arcadeDrive(drive, turn);
-  }
-
-  public void tankmode(double left, double right){
-
-    differentialDrive.tankDrive(left, right);
-  }
   
   public void setSmoothDrive(double joystickDrive, double joystickTurn) {
     // Joystick girişlerini yumuşatmak için bir katsayı kullanıyoruz (örnek: 0.1)
@@ -119,7 +109,7 @@ public class driveSubsystem extends SubsystemBase {
 
     // Motor yönleri ters olduğundan, sağ motorun yönünü değiştireceğiz
     double leftOutput = driveOutput + turnOutput;   // Sol motorun çıkışı
-    double rightOutput = driveOutput - turnOutput;  // Sağ motorun çıkışı
+    double rightOutput = driveOutput + turnOutput;  // Sağ motorun çıkışı
 
     // Motorlara komut gönder
     differentialDrive.tankDrive(leftOutput, rightOutput);
