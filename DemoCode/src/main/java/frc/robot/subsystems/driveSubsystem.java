@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 //import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.OperatorConstants;
 
 public class driveSubsystem extends SubsystemBase {
   /** Yeni bir Drive Alt sistemi (Subsystem) Oluşturalım */
@@ -32,9 +33,9 @@ public class driveSubsystem extends SubsystemBase {
   /* Differential Drive tanımlıyoruz  */
 
   private DifferentialDrive differentialDrive = new DifferentialDrive(leftMotor,rightMotor);
-  private double kP = 0.1;  // Proportional parametresi
-  private double kI = 0.01; // Integral parametrei
-  private double kD = 0.01; // Derivative parametresi
+  private double kP = OperatorConstants.kP;  // Proportional parametresi
+  private double kI = OperatorConstants.kI; // Integral parametrei
+  private double kD = OperatorConstants.kD; // Derivative parametresi
   
   // Mevcut hızlar (drive ve turn için)
   private double currentDrive = 0;

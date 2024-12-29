@@ -16,5 +16,8 @@ public final class Constants {
   
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+    public static  double kP = 0.1;  // Proportional parametresi
+    public static double kI = 0.01; // Integral parametrei
+    public static double kD = 0.01; // Derivative parametresi
   }
 }
