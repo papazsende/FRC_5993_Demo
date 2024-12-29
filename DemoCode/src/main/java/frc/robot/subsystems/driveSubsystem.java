@@ -40,10 +40,6 @@ public class driveSubsystem extends SubsystemBase {
   private double currentDrive = 0;
   private double currentTurn = 0;
 
-  // Önceki hız değerleri (PID hesaplaması için)
-  private double previousDrive = 0;
-  private double previousTurn = 0;
-
   // Hedef hızlar (Joystick'ten gelen)
   private double targetDrive = 0;
   private double targetTurn = 0;
@@ -74,6 +70,11 @@ public class driveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("kP", kP);
     SmartDashboard.putNumber("kI", kI);
     SmartDashboard.putNumber("kD", kD);
+    SmartDashboard.putNumber("Target Drive", targetDrive);
+    SmartDashboard.putNumber("Target Turn", targetTurn);
+    SmartDashboard.putNumber("Left Encoder", leftMotorEncoder.getPosition());
+    SmartDashboard.putNumber("Right Encoder", rightMotorEncoder.getPosition());
+
 
 
   }
@@ -122,10 +123,6 @@ public class driveSubsystem extends SubsystemBase {
 
     // Motorlara komut gönder
     differentialDrive.tankDrive(leftOutput, rightOutput);
-
-    // Önceki hız değerlerini güncelle
-    previousDrive = currentDrive;
-    previousTurn = currentTurn;
 
     // Mevcut hızları güncelle
     currentDrive = leftOutput; // Sol motorun çıkışı
