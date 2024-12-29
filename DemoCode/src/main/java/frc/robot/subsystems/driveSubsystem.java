@@ -20,7 +20,7 @@ public class driveSubsystem extends SubsystemBase {
   /* Öcelikle SparkMax'leri tanımlıyoruz ve motor tiplerini ayarlıyoruz  */
   private CANSparkMax leftMotor = new CANSparkMax(0,MotorType.kBrushed);
   private CANSparkMax rightMotor = new CANSparkMax(1,MotorType.kBrushed);
-
+  
   //private PWMSparkMax leftMotor = new PWMSparkMax(0);
   //private PWMSparkMax rightMotor = new PWMSparkMax(1);
   
@@ -32,6 +32,24 @@ public class driveSubsystem extends SubsystemBase {
   /* Differential Drive tanımlıyoruz  */
 
   private DifferentialDrive differentialDrive = new DifferentialDrive(leftMotor,rightMotor);
+  private double kP = 0.1;  // Proportional parametresi
+  private double kI = 0.01; // Integral parametrei
+  private double kD = 0.01; // Derivative parametresi
+  
+  // Mevcut hızlar (drive ve turn için)
+  private double currentDrive = 0;
+  private double currentTurn = 0;
+
+  // Önceki hız değerleri (PID hesaplaması için)
+  private double previousDrive = 0;
+  private double previousTurn = 0;
+
+  // Hedef hızlar (Joystick'ten gelen)
+  private double targetDrive = 0;
+  private double targetTurn = 0;
+  
+  private double integral = 0.0;     // Toplam hata (Integral terimi için)
+  private double previousError = 0.0; // Bir önceki hata (Derivative terimi için)
 
   public driveSubsystem() {
 
@@ -53,18 +71,32 @@ public class driveSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("Right Encoder", getRightEncoderValue());
-    SmartDashboard.putNumber("Left Encoder", getLeftEncoderValue());
+    SmartDashboard.putNumber("kP", kP);
+    SmartDashboard.putNumber("kI", kI);
+    SmartDashboard.putNumber("kD", kD);
+
 
   }
+  // PID Kontrol Metodu
 
-  public double getRightEncoderValue(){
-    return rightMotorEncoder.getPosition();
+  public double calculatePID(double targetSpeed, double currentSpeed) {
+      // Hata hesaplama (Hedef hız - Mevcut hız)
+      double error = targetSpeed - currentSpeed;
+
+      // Integral terimi: Hata birikimi (0.02 saniye döngü süresi)
+      integral += error * 0.02;
+
+      // Derivative terimi: Hatanın değişim oranı
+      double derivative = (error - previousError) / 0.02;
+
+      // Hatanın bir önceki değerini güncelle
+      previousError = error;
+
+      // PID formülü: P + I + D
+      return kP * error + kI * integral + kD * derivative;
   }
 
-  public double getLeftEncoderValue(){
-    return leftMotorEncoder.getPosition();
-  }
+
 
   public void set(double drive,double turn){
     differentialDrive.arcadeDrive(drive, turn);
@@ -73,6 +105,35 @@ public class driveSubsystem extends SubsystemBase {
   public void tankmode(double left, double right){
 
     differentialDrive.tankDrive(left, right);
+  }
+  
+  public void setSmoothDrive(double joystickDrive, double joystickTurn) {
+    // Joystick girişlerini yumuşatmak için bir katsayı kullanıyoruz (örnek: 0.1)
+    targetDrive = targetDrive + 0.1 * (joystickDrive - targetDrive);
+    targetTurn = targetTurn + 0.1 * (joystickTurn - targetTurn);
+
+    // PID hata (error) hesaplaması
+    double driveOutput = calculatePID(targetDrive, currentDrive);
+    double turnOutput = calculatePID(targetTurn, currentTurn);
+
+    // Motor yönleri ters olduğundan, sağ motorun yönünü değiştireceğiz
+    double leftOutput = driveOutput + turnOutput;   // Sol motorun çıkışı
+    double rightOutput = driveOutput - turnOutput;  // Sağ motorun çıkışı
+
+    // Motorlara komut gönder
+    differentialDrive.tankDrive(leftOutput, rightOutput);
+
+    // Önceki hız değerlerini güncelle
+    previousDrive = currentDrive;
+    previousTurn = currentTurn;
+
+    // Mevcut hızları güncelle
+    currentDrive = leftOutput; // Sol motorun çıkışı
+    currentTurn = turnOutput;  // Dönüş çıkışı
+
+    // SmartDashboard için PID çıktılarını ekleyelim
+    SmartDashboard.putNumber("Drive Output", driveOutput);
+    SmartDashboard.putNumber("Turn Output", turnOutput);
   }
 
   public void stop(){

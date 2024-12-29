@@ -3,8 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
-import frc.robot.Constants.OperatorConstants;
+import static frc.robot.Constants.OperatorConstants.*;
 import frc.robot.commands.defaultDriveCommand;
 import frc.robot.subsystems.driveSubsystem;
 import edu.wpi.first.wpilibj.Joystick;
@@ -17,11 +16,13 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
+ * 
  */
 public class RobotContainer {
+
   // The robot's subsystems and commands are defined here...
   private final driveSubsystem m_DriveSubsystem = new driveSubsystem();
-  private Joystick controller = new Joystick(0);
+  private Joystick controller = new Joystick(kDriverControllerPort);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
@@ -44,8 +45,6 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-
-
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
   }
