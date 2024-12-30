@@ -5,11 +5,10 @@
 package frc.robot.subsystems;
 
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 //import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,16 +18,15 @@ public class driveSubsystem extends SubsystemBase {
   /** Yeni bir Drive Alt sistemi (Subsystem) Oluşturalım */
 
   /* Öcelikle SparkMax'leri tanımlıyoruz ve motor tiplerini ayarlıyoruz  */
-  private CANSparkMax leftMotor = new CANSparkMax(0,MotorType.kBrushed);
-  private CANSparkMax rightMotor = new CANSparkMax(1,MotorType.kBrushed);
-  
+  //private CANSparkMax leftMotor = new CANSparkMax(0,MotorType.kBrushed);
+  //private CANSparkMax rightMotor = new CANSparkMax(1,MotorType.kBrushed);
+  private PWMSparkMax leftMotor = new PWMSparkMax(0);
+  private PWMSparkMax rightMotor = new PWMSparkMax(1);
   //private PWMSparkMax leftMotor = new PWMSparkMax(0);
   //private PWMSparkMax rightMotor = new PWMSparkMax(1);
   
   /* Motorlardaki encoder'ları tanımlıyoruz, böylelikle motorların dönüşlerine dair bilgi edinebileceğiz */
 
-  private RelativeEncoder leftMotorEncoder = leftMotor.getEncoder();
-  private RelativeEncoder rightMotorEncoder = rightMotor.getEncoder();
 
   /* Differential Drive tanımlıyoruz  */
 
@@ -50,16 +48,13 @@ public class driveSubsystem extends SubsystemBase {
 
   public driveSubsystem() {
 
-    leftMotor.restoreFactoryDefaults();
-    rightMotor.restoreFactoryDefaults();
+
 
     /* Eğer iki motora da aynı komutu verirsek daireler çizer, bir tarafın ters olması gerekir */
     rightMotor.setInverted(true);
     leftMotor.setInverted(false);
 
-    /*Subsystem içinde encoder pozisyonunu 0'a ayarlıyoruz ve resetliyoruz */
-    rightMotorEncoder.setPosition(0);
-    leftMotorEncoder.setPosition(0);
+
 
 
   }
