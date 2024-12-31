@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 
 
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 //import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
@@ -45,14 +46,15 @@ public class driveSubsystem extends SubsystemBase {
   
   private double integral = 0.0;     // Toplam hata (Integral terimi için)
   private double previousError = 0.0; // Bir önceki hata (Derivative terimi için)
+  SlewRateLimiter joyfilter = new SlewRateLimiter(0.8);
 
   public driveSubsystem() {
 
 
 
     /* Eğer iki motora da aynı komutu verirsek daireler çizer, bir tarafın ters olması gerekir */
-    rightMotor.setInverted(true);
-    leftMotor.setInverted(false);
+    rightMotor.setInverted(false);
+    leftMotor.setInverted(true);
 
 
 
@@ -63,19 +65,19 @@ public class driveSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("kP", kP);
-    SmartDashboard.putNumber("kI", kI);
-    SmartDashboard.putNumber("kD", kD);
+    //SmartDashboard.putNumber("kP", kP);
+    //SmartDashboard.putNumber("kI", kI);
+    //SmartDashboard.putNumber("kD", kD);
     SmartDashboard.putNumber("Target Drive", targetDrive);
     SmartDashboard.putNumber("Target Turn", targetTurn);
     //SmartDashboard.putNumber("Left Encoder", leftMotorEncoder.getPosition());
-   // SmartDashboard.putNumber("Right Encoder", rightMotorEncoder.getPosition());
+    // SmartDashboard.putNumber("Right Encoder", rightMotorEncoder.getPosition());
 
 
 
   }
   // PID Kontrol Metodu
-
+/* 
   public double calculatePID(double targetSpeed, double currentSpeed) {
       // Hata hesaplama (Hedef hız - Mevcut hız)
       double error = targetSpeed - currentSpeed;
@@ -92,20 +94,21 @@ public class driveSubsystem extends SubsystemBase {
       // PID formülü: P + I + D
       return kP * error + kI * integral + kD * derivative;
   }
-
+*/
   
   public void setSmoothDrive(double joystickDrive, double joystickTurn) {
     // Joystick girişlerini yumuşatmak için bir katsayı kullanıyoruz (örnek: 0.1)
-    targetDrive = targetDrive + 0.1 * (joystickDrive - targetDrive);
-    targetTurn = targetTurn + 0.1 * (joystickTurn - targetTurn);
+    targetDrive = joystickDrive;
+    targetTurn = joystickTurn;
+    targetDrive = -targetDrive;
 
     // PID hata (error) hesaplaması
-    double driveOutput = calculatePID(targetDrive, currentDrive);
-    double turnOutput = calculatePID(targetTurn, currentTurn);
+    double driveOutput = joyfilter.calculate(targetDrive);
+    double turnOutput = targetTurn * 0.7;
 
     // Motor yönleri ters olduğundan, sağ motorun yönünü değiştireceğiz
     double leftOutput = driveOutput + turnOutput;   // Sol motorun çıkışı
-    double rightOutput = driveOutput + turnOutput;  // Sağ motorun çıkışı
+    double rightOutput = driveOutput - turnOutput;  // Sağ motorun çıkışı
 
     // Motorlara komut gönder
     differentialDrive.tankDrive(leftOutput, rightOutput);
@@ -115,8 +118,21 @@ public class driveSubsystem extends SubsystemBase {
     currentTurn = turnOutput;  // Dönüş çıkışı
 
     // SmartDashboard için PID çıktılarını ekleyelim
-    SmartDashboard.putNumber("Drive Output", driveOutput);
+    SmartDashboard.putNumber("Joysstick Y Axis", joystickDrive);
+    SmartDashboard.putNumber("Joystick X Axis", joystickTurn);
+    SmartDashboard.putNumber("Target Drive", targetDrive);
+    SmartDashboard.putNumber("Target Turn", targetTurn);
     SmartDashboard.putNumber("Turn Output", turnOutput);
+    SmartDashboard.putNumber("Drive Output", leftOutput);
+    SmartDashboard.putNumber("left Output", leftOutput);
+    SmartDashboard.putNumber("Right Output", rightOutput);
+
+
+
+  }
+  public void set(double joystickDrive, double joystickTurn){
+
+    differentialDrive.arcadeDrive(-joystickDrive, joystickTurn);
   }
 
   public void stop(){

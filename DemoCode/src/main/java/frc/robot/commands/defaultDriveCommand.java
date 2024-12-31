@@ -37,14 +37,13 @@ public class defaultDriveCommand extends Command {
 
     double targetDrive = JOYSTICK.getRawAxis(1);
     double targetTurn = JOYSTICK.getRawAxis(0);
-    DRIVE_SUBSYSTEM.setSmoothDrive(targetDrive, targetTurn);
-
+    //DRIVE_SUBSYSTEM.setSmoothDrive(targetDrive, targetTurn);
+    DRIVE_SUBSYSTEM.set(targetDrive,targetTurn);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    DRIVE_SUBSYSTEM.stop();
   }
 
   // Returns true when the command should end.
