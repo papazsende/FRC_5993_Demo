@@ -5,10 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.driveSubsystem;
 
@@ -18,14 +16,17 @@ public class defaultDriveCommand extends Command {
   private Joystick JOYSTICK;
   double drive;
   double turn;
+  double kP = 1;
+  double kI = 0;
+  double kD = 0.01;
   SlewRateLimiter driveFilter = new SlewRateLimiter(1);
   SlewRateLimiter turnFilter = new SlewRateLimiter(1);
-  LinearFilter testFilter = LinearFilter.singlePoleIIR(0.2, 0.2);
   public defaultDriveCommand(driveSubsystem drive,Joystick joy) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.DRIVE_SUBSYSTEM = drive;
     this.JOYSTICK = joy;
     addRequirements(DRIVE_SUBSYSTEM);
+
   }
 
   // Called when the command is initially scheduled.
@@ -44,13 +45,11 @@ public class defaultDriveCommand extends Command {
     double targetDrive = JOYSTICK.getRawAxis(1);
     double targetTurn = JOYSTICK.getRawAxis(0);
 
-    double clampedDrive = MathUtil.clamp(targetDrive,-0.8, 0.8);
+    double clampedDrive = MathUtil.clamp(targetDrive,-1, 1);
     double clampedTurn = MathUtil.clamp(targetTurn,-0.8, 0.8);
 
     //DRIVE_SUBSYSTEM.setSmoothDrive(targetDrive, targetTurn);
-    DRIVE_SUBSYSTEM.set(testFilter.calculate(clampedDrive),clampedTurn);
-    SmartDashboard.putNumber("Calculated Output", driveFilter.calculate(targetDrive));
-
+    DRIVE_SUBSYSTEM.set(driveFilter.calculate(clampedDrive),clampedTurn);
   }
 
   // Called once the command ends or is interrupted.

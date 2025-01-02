@@ -7,14 +7,10 @@ package frc.robot.subsystems;
 
 
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 //import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.OperatorConstants;
 
 public class driveSubsystem extends SubsystemBase {
   /** Yeni bir Drive Alt sistemi (Subsystem) Oluşturalım */
@@ -33,21 +29,9 @@ public class driveSubsystem extends SubsystemBase {
   /* Differential Drive tanımlıyoruz  */
 
   private DifferentialDrive differentialDrive = new DifferentialDrive(leftMotor,rightMotor);
-  private double kP = OperatorConstants.kP;  // Proportional parametresi
-  private double kI = OperatorConstants.kI; // Integral parametrei
-  private double kD = OperatorConstants.kD; // Derivative parametresi
-  
-  // Mevcut hızlar (drive ve turn için)
-  private double currentDrive = 0;
-  private double currentTurn = 0;
 
-  // Hedef hızlar (Joystick'ten gelen)
-  private double targetDrive = 0;
-  private double targetTurn = 0;
-  
-  private double integral = 0.0;     // Toplam hata (Integral terimi için)
-  private double previousError = 0.0; // Bir önceki hata (Derivative terimi için)
-  SlewRateLimiter joyfilter = new SlewRateLimiter(0.8);
+
+
 
   public driveSubsystem() {
 
@@ -69,8 +53,6 @@ public class driveSubsystem extends SubsystemBase {
     //SmartDashboard.putNumber("kP", kP);
     //SmartDashboard.putNumber("kI", kI);
     //SmartDashboard.putNumber("kD", kD);
-    SmartDashboard.putNumber("Target Drive", targetDrive);
-    SmartDashboard.putNumber("Target Turn", targetTurn);
     //SmartDashboard.putNumber("Left Encoder", leftMotorEncoder.getPosition());
     // SmartDashboard.putNumber("Right Encoder", rightMotorEncoder.getPosition());
 
@@ -96,9 +78,9 @@ public class driveSubsystem extends SubsystemBase {
       return kP * error + kI * integral + kD * derivative;
   }
 */
-  
+  /* 
   public void setSmoothDrive(double joystickDrive, double joystickTurn) {
-    // Joystick girişlerini yumuşatmak için bir katsayı kullanıyoruz (örnek: 0.1)
+   // Joystick girişlerini yumuşatmak için bir katsayı kullanıyoruz (örnek: 0.1)
     targetDrive = joystickDrive;
     targetTurn = joystickTurn;
     targetDrive = -targetDrive;
@@ -131,6 +113,7 @@ public class driveSubsystem extends SubsystemBase {
 
 
   }
+   */
   public void set(double joystickDrive, double joystickTurn){
 
     differentialDrive.arcadeDrive(-joystickDrive, joystickTurn);
