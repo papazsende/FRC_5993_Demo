@@ -21,8 +21,7 @@ public class driveSubsystem extends SubsystemBase {
   //private CANSparkMax rightMotor = new CANSparkMax(1,MotorType.kBrushed);
   private PWMSparkMax leftMotor = new PWMSparkMax(0);
   private PWMSparkMax rightMotor = new PWMSparkMax(1);
-  //private PWMSparkMax leftMotor = new PWMSparkMax(0);
-  //private PWMSparkMax rightMotor = new PWMSparkMax(1);
+
   
   /* Motorlardaki encoder'ları tanımlıyoruz, böylelikle motorların dönüşlerine dair bilgi edinebileceğiz */
 
@@ -60,67 +59,10 @@ public class driveSubsystem extends SubsystemBase {
 
 
   }
-  // PID Kontrol Metodu
-/* 
-  public double calculatePID(double targetSpeed, double currentSpeed) {
-      // Hata hesaplama (Hedef hız - Mevcut hız)
-      double error = targetSpeed - currentSpeed;
-
-      // Integral terimi: Hata birikimi (0.02 saniye döngü süresi)
-      integral += error * 0.02;
-
-      // Derivative terimi: Hatanın değişim oranı
-      double derivative = (error - previousError) / 0.02;
-
-      // Hatanın bir önceki değerini güncelle
-      previousError = error;
-
-      // PID formülü: P + I + D
-      return kP * error + kI * integral + kD * derivative;
-  }
-*/
-  /* 
-  public void setSmoothDrive(double joystickDrive, double joystickTurn) {
-   // Joystick girişlerini yumuşatmak için bir katsayı kullanıyoruz (örnek: 0.1)
-    targetDrive = joystickDrive;
-    targetTurn = joystickTurn;
-    targetDrive = -targetDrive;
-
-    // PID hata (error) hesaplaması
-    double driveOutput = joyfilter.calculate(targetDrive);
-    double turnOutput = targetTurn * 0.7;
-
-    // Motor yönleri ters olduğundan, sağ motorun yönünü değiştireceğiz
-    double leftOutput = driveOutput + turnOutput;   // Sol motorun çıkışı
-    double rightOutput = driveOutput - turnOutput;  // Sağ motorun çıkışı
-
-    // Motorlara komut gönder
-    differentialDrive.tankDrive(leftOutput, rightOutput);
-
-    // Mevcut hızları güncelle
-    currentDrive = leftOutput; // Sol motorun çıkışı
-    currentTurn = turnOutput;  // Dönüş çıkışı
-
-    // SmartDashboard için PID çıktılarını ekleyelim
-    SmartDashboard.putNumber("Joysstick Y Axis", joystickDrive);
-    SmartDashboard.putNumber("Joystick X Axis", joystickTurn);
-    SmartDashboard.putNumber("Target Drive", targetDrive);
-    SmartDashboard.putNumber("Target Turn", targetTurn);
-    SmartDashboard.putNumber("Turn Output", turnOutput);
-    SmartDashboard.putNumber("Drive Output", leftOutput);
-    SmartDashboard.putNumber("left Output", leftOutput);
-    SmartDashboard.putNumber("Right Output", rightOutput);
- 
 
 
-  }
-   */
   public void set(double joystickDrive, double joystickTurn){
-    /*if(joystickDrive >= 0.1 && joystickDrive <= 0.4){
-      joystickDrive = 0.4;
-    }else if(joystickDrive <= -0.1 && joystickDrive >= -0.4){
-      joystickDrive = -0.4;
-    }*/
+
     differentialDrive.arcadeDrive(-joystickDrive, joystickTurn);
     SmartDashboard.putNumber("Guc", joystickDrive);
   }
