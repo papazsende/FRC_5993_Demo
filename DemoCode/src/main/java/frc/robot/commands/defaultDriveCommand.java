@@ -19,7 +19,7 @@ public class defaultDriveCommand extends Command {
   double kP = 1;
   double kI = 0;
   double kD = 0.01;
-  SlewRateLimiter driveFilter = new SlewRateLimiter(1);
+  SlewRateLimiter driveFilter = new SlewRateLimiter(2);
   SlewRateLimiter turnFilter = new SlewRateLimiter(1);
   public defaultDriveCommand(driveSubsystem drive,Joystick joy) {
     // Use addRequirements() here to declare subsystem dependencies.

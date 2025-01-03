@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -115,10 +116,15 @@ public class driveSubsystem extends SubsystemBase {
   }
    */
   public void set(double joystickDrive, double joystickTurn){
-
+    /*if(joystickDrive >= 0.1 && joystickDrive <= 0.4){
+      joystickDrive = 0.4;
+    }else if(joystickDrive <= -0.1 && joystickDrive >= -0.4){
+      joystickDrive = -0.4;
+    }*/
     differentialDrive.arcadeDrive(-joystickDrive, joystickTurn);
+    SmartDashboard.putNumber("Guc", joystickDrive);
   }
-
+  
   public void stop(){
     differentialDrive.stopMotor();
   }
