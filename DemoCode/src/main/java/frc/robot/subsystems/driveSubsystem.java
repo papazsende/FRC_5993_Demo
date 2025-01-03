@@ -6,23 +6,6 @@ package frc.robot.subsystems;
 
 
 
-
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-//import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-public class driveSubsystem extends SubsystemBase {
-  /** Yeni bir Drive Alt sistemi (Subsystem) Oluşturalım */
-
-  /* Öcelikle SparkMax'leri tanımlıyoruz ve motor tiplerini ayarlıyoruz  */
-  //private CANSparkMax leftMotor = new CANSparkMax(0,MotorType.kBrushed);
-  //private CANSparkMax rightMotor = new CANSparkMax(1,MotorType.kBrushed);
-  private PWMSparkMax leftMotor = new PWMSparkMax(0);
-  private PWMSparkMax rightMotor = new PWMSparkMax(1);
-
-  
   /* Motorlardaki encoder'ları tanımlıyoruz, böylelikle motorların dönüşlerine dair bilgi edinebileceğiz */
 
 
@@ -31,20 +14,6 @@ public class driveSubsystem extends SubsystemBase {
   private DifferentialDrive differentialDrive = new DifferentialDrive(leftMotor,rightMotor);
 
 
-
-
-  public driveSubsystem() {
-
-
-
-    /* Eğer iki motora da aynı komutu verirsek daireler çizer, bir tarafın ters olması gerekir */
-    rightMotor.setInverted(false);
-    leftMotor.setInverted(true);
-
-
-
-
-  }
 
   @Override
   public void periodic() {
